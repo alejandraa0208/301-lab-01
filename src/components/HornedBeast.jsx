@@ -1,19 +1,14 @@
 import React from "react";
-import PropTypes from "prop-types";
 
-const HornedBeast = ({ title, imageUrl, description }) => {
-    return (
-        <div>
-            <h2>{title}</h2>
-            <img src={imageUrl} alt={title} title={title} />
-            <p>{description}</p>
+class HornedBeast extends React.Component {
+    render() {
+        return (
+            <div>
+            <h2>{this.props.title}</h2>
+            <img class="horns" src={this.props.image} alt={this.props.description} title={this.props.title}/>
+            <p>{this.props.description}</p>
         </div>
-    );
-};
-
-HornedBeast.propTypes = {
-    title: PropTypes.string.isRequired,
-    imageUrl: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
+        )
+    }
 }
 export default HornedBeast;
