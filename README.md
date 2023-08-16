@@ -45,6 +45,8 @@ Any environment configuration steps.
 
 ### Languages & tools
 
+Assistance from Chat.GPT
+
 ## Change Log
 
 ## Collaborators
