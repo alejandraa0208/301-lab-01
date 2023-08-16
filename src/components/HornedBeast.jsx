@@ -14,14 +14,20 @@ class HornedBeast extends React.Component {
         }));
     }
     render() {
-        const { title, image, description } = this.props;
+        const { title, image, description, onClick } = this.props;
         const { favorites } = this.state;
 
         return (
             <Card className="horned-beast">
-                <Card.Img variant="top" src={image} alt={title} />
                 <Card.Body>
                     <Card.Title>{title}</Card.Title>
+                    <Card.Img 
+                        variant="top" 
+                        src={image} 
+                        alt={title}
+                        className="img-fluid"
+                        onClick={onClick} 
+                    />
                     <Card.Text>{description}</Card.Text>
                     <div className="favorite">
                         <span>{favorites}</span>
