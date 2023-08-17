@@ -8,30 +8,39 @@ class Gallery extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchQuery: '',
-      selectedHorns: '',
+      filterOption: "",
+      searchQuery: "",
     };
   }
-  handleSearchChange = (event) => {
-    this.setState({ searchQuery: event.target.value });
-  }
-
-  handleHornsChange = (event) => {
-    this.setState({ selectedHorns: event.target.value });
+  handleFilterChange = (event) => {
+    this.setState({ filterOption: event.target.value });
   }
 
     render() {
       const { data } = this.props;
-      const { searchQuery, selectedHorns } = this.state;
-
+      const { filterOption, searchQuery } = this.state;
+      
+      // the uniqueHorns was assisted by chatGPT
       const uniqueHorns = [...new Set(data.map((beast) => beast.horns))];
-
+      
+      // merging the searchQuery and Filter by horns was assisted by chatGPT
       const filteredData = data.filter(beast => {
-        const regex = new RegExp(searchQuery, 'i');
-        return regex.test(beast.keyword) && (selectedHorns === '' || beast.horns === parseInt(selectedHorns));
+        if (filterOption === "all" || filterOption === "") {
+          return true;
+        } else if (filterOption === "search") {
+          const regex = new RegExp(searchQuery, "i");
+          return regex.test(beast.keyword);
+        } else {
+          return beast.horns === parseInt(filterOption);
+        }
       });
 
-      const hornedBeasts = filteredData.map((beast) => (
+      const displayedData =
+        filterOption === "all" || filterOption === ""
+        ? data
+        : filteredData;
+
+      const hornedBeasts = displayedData.map((beast) => (
           <div key={beast._id} className="col-md-3 mb-4">
              <HornedBeast
             title={beast.title}
@@ -45,28 +54,32 @@ class Gallery extends React.Component {
         return (
           <div className="container mt-4">
             <Form>
-              <Form.Group controllId="formHornsFilter">
-                <Form.Label>Filter by Number of Horns:</Form.Label>
+              <Form.Group controllId="formFilter">
+                <Form.Label>Filter by:</Form.Label>
                 <Form.Control
                 as="select"
-                value={selectedHorns}
-                onChange={this.handleHornsChange}
+                value={filterOption}
+                onChange={this.handleFilterChange}
                 >
-                  <option value="">All</option>
+                  <option value="all">Show All</option>
                   {uniqueHorns.map((hornsValue, index) => (
                     <option key={index} value={hornsValue}>
                       {hornsValue} Horn{hornsValue !== 1 ? "s" : ""}
                     </option>
                   ))}
+                  <option value="search">Search by Keyword</option>
                 </Form.Control>
+                {filterOption === "search" && (
+                  <input
+                  type="text"
+                  placeholder="Enter keyword..."
+                  onChange={(e) =>
+                  this.setState({ searchQuery: e.target.value })
+                  }
+                />
+                )}
               </Form.Group>
             </Form>
-            <input
-              type="text"
-              placeholder="Search by keyword..."
-              value={searchQuery}
-              onChange={this.handleSearchChange}
-            />
             <div className="row">
               {hornedBeasts}
             </div>
