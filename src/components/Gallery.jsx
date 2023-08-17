@@ -1,5 +1,7 @@
 import React from "react";
+import { Form } from 'react-bootstrap';
 import HornedBeast from "./HornedBeast";
+
 
 
 class Gallery extends React.Component {
@@ -7,19 +9,26 @@ class Gallery extends React.Component {
     super(props);
     this.state = {
       searchQuery: '',
+      selectedHorns: '',
     };
   }
   handleSearchChange = (event) => {
     this.setState({ searchQuery: event.target.value });
   }
 
+  handleHornsChange = (event) => {
+    this.setState({ selectedHorns: event.target.value });
+  }
+
     render() {
       const { data } = this.props;
-      const { searchQuery } = this.state;
+      const { searchQuery, selectedHorns } = this.state;
+
+      const uniqueHorns = [...new Set(data.map((beast) => beast.horns))];
 
       const filteredData = data.filter(beast => {
         const regex = new RegExp(searchQuery, 'i');
-        return regex.test(beast.keyword);
+        return regex.test(beast.keyword) && (selectedHorns === '' || beast.horns === parseInt(selectedHorns));
       });
 
       const hornedBeasts = filteredData.map((beast) => (
@@ -35,6 +44,23 @@ class Gallery extends React.Component {
     
         return (
           <div className="container mt-4">
+            <Form>
+              <Form.Group controllId="formHornsFilter">
+                <Form.Label>Filter by Number of Horns:</Form.Label>
+                <Form.Control
+                as="select"
+                value={selectedHorns}
+                onChange={this.handleHornsChange}
+                >
+                  <option value="">All</option>
+                  {uniqueHorns.map((hornsValue, index) => (
+                    <option key={index} value={hornsValue}>
+                      {hornsValue} Horn{hornsValue !== 1 ? "s" : ""}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+            </Form>
             <input
               type="text"
               placeholder="Search by keyword..."
